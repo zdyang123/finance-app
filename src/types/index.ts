@@ -5,6 +5,7 @@ export interface Transaction {
   meta: string
   type: 'exp' | 'inc'
   amt: number
+  date?: string
 }
 
 export interface Category {

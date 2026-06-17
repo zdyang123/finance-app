@@ -3,6 +3,7 @@ import Home from './Home.vue'
 import Record from './Record.vue'
 import Stats from './Stats.vue'
 import Profile from './Profile.vue'
+import AllTransactions from './AllTransactions.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: Profile,
+  },
+  {
+    path: '/all',
+    name: 'all',
+    component: AllTransactions,
   },
 ]
 

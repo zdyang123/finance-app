@@ -71,7 +71,7 @@ const quickRec = (category: string) => {
 
     <div class="section-hd">
       <span class="section-title">今日账单</span>
-      <span class="section-more">查看全部 ›</span>
+      <span class="section-more" @click="router.push({ name: 'all' })">查看全部 ›</span>
     </div>
 
     <div class="tx-list">
@@ -269,6 +269,12 @@ const quickRec = (category: string) => {
     .section-more {
       font-size: 12px;
       color: #3ecfb2;
+      cursor: pointer;
+      transition: opacity 0.15s;
+
+      &:active {
+        opacity: 0.6;
+      }
     }
   }
 

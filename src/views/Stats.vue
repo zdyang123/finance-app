@@ -2,8 +2,17 @@
 import { ref, computed } from 'vue'
 import { MONTH_DATA, MONTHS, CAT_BREAKDOWN } from '../utils/data'
 import { useFormatNumber } from '../utils/helpers'
+import MonthPicker from '../components/MonthPicker.vue'
 
 const currentMonth = ref(5) // 0-based June
+
+// MonthPicker 使用 'YYYY-MM' 字符串
+const selectedMonth = ref('2026-06')
+
+const syncFromPicker = (val: string) => {
+  selectedMonth.value = val
+  currentMonth.value = parseInt(val.split('-')[1]) - 1
+}
 
 const monthLabel = computed(() => `2026年 ${MONTHS[currentMonth.value]}`)
 
@@ -12,10 +21,6 @@ const currentMonthData = computed(() => MONTH_DATA[currentMonth.value])
 const maxChartValue = computed(() => {
   return Math.max(...MONTH_DATA.flatMap(d => [d.e, d.i]))
 })
-
-const changeMonth = (direction: number) => {
-  currentMonth.value = Math.max(0, Math.min(11, currentMonth.value + direction))
-}
 
 const getBarHeight = (value: number) => {
   return Math.max(4, (value / maxChartValue.value) * 70)
@@ -26,9 +31,7 @@ const getBarHeight = (value: number) => {
   <div class="screen-content">
     <div class="stats-hd">
       <div class="month-sel">
-        <div class="m-arrow" @click="changeMonth(-1)">‹</div>
-        <div class="m-label">{{ monthLabel }}</div>
-        <div class="m-arrow" @click="changeMonth(1)">›</div>
+        <MonthPicker v-model="selectedMonth" variant="light" @update:model-value="syncFromPicker" />
       </div>
       <div class="s-overview">
         <div class="s-nums">
@@ -129,27 +132,7 @@ const getBarHeight = (value: number) => {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 18px;
       margin-bottom: 22px;
-
-      .m-arrow {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.18);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 14px;
-        cursor: pointer;
-      }
-
-      .m-label {
-        font-size: 17px;
-        font-weight: 700;
-        color: #fff;
-      }
     }
 
     .s-overview {

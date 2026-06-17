@@ -20,7 +20,7 @@ const isActiveRoute = (name: string) => currentRouteName.value === name
 const showFab = computed(() => currentRouteName.value === 'home')
 
 const navBarBackground = computed(() => {
-  if (['home', 'stats', 'profile'].includes(currentRouteName.value as string)) {
+  if (['home', 'stats', 'profile', 'all'].includes(currentRouteName.value as string)) {
     return 'linear-gradient(140deg,#3ECFB2,#28B39A)'
   }
   return 'transparent'
