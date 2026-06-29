@@ -13,6 +13,9 @@ const recordType = ref<RecordType>('expense')
 const amountStr = ref('')
 const selectedCategory = ref('')
 const note = ref('')
+const selectedDate = ref(toDateValue(new Date()))
+const datePickerDate = ref(new Date())
+const datePickerVisible = ref(false)
 
 const categories = computed<Category[]>(() =>
   recordType.value === 'expense' ? CATEGORIES_EXP : CATEGORIES_INC
@@ -29,6 +32,41 @@ onMounted(() => {
 const formattedAmount = computed(() => {
   return amountStr.value || '0.00'
 })
+
+const formattedDate = computed(() => formatDateLabel(selectedDate.value))
+
+function toDateValue(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function formatDateLabel(value: string) {
+  if (!value) return '今天'
+
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+  const weekday = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()]
+  const today = toDateValue(new Date())
+  const yesterdayDate = new Date()
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+  const yesterday = toDateValue(yesterdayDate)
+
+  if (value === today) return `今天 · ${month}月${day}日 ${weekday}`
+  if (value === yesterday) return `昨天 · ${month}月${day}日 ${weekday}`
+  return `${year}年${month}月${day}日 ${weekday}`
+}
+
+const handleDateConfirm = ({ selectedValue }: { selectedValue: (string | number)[] }) => {
+  const year = selectedValue[0]
+  const month = String(selectedValue[1]).padStart(2, '0')
+  const day = String(selectedValue[2]).padStart(2, '0')
+
+  selectedDate.value = `${year}-${month}-${day}`
+  datePickerDate.value = new Date(Number(year), Number(selectedValue[1]) - 1, Number(selectedValue[2]))
+  datePickerVisible.value = false
+}
 
 const handleNumberClick = (value: string) => {
   if (value === '.' && amountStr.value.includes('.')) return
@@ -57,7 +95,8 @@ const handleConfirm = () => {
   if (!amountStr.value || isNaN(value) || value === 0) return
 
   const typeText = recordType.value === 'expense' ? '支出' : '收入'
-  showToast(`✅ ${typeText} ¥${value.toFixed(2)} 已记录`)
+  const dateText = formattedDate.value.split(' · ')[0]
+  showToast(`✅ ${dateText} ${typeText} ¥${value.toFixed(2)} 已记录`)
 
   amountStr.value = ''
   setTimeout(() => {
@@ -99,6 +138,17 @@ const selectCategory = (catName: string) => {
     <div class="amount-zone">
       <span class="az-prefix">¥</span>
       <span class="az-number">{{ formattedAmount }}</span>
+    </div>
+
+    <div class="date-row">
+      <button class="date-card" type="button" @click="datePickerVisible = true">
+        <span class="date-icon">📅</span>
+        <span class="date-copy">
+          <span class="date-label">记账日期</span>
+          <span class="date-value">{{ formattedDate }}</span>
+        </span>
+        <span class="date-arrow">›</span>
+      </button>
     </div>
 
     <div class="cat-grid">
@@ -143,6 +193,17 @@ const selectCategory = (catName: string) => {
       <div class="np-btn np-d" style="grid-column: span 2" @click="handleNumberClick('0')">0</div>
       <div class="np-btn np-sp" @click="handleDelete">⌫</div>
     </div>
+
+    <nut-datepicker
+      v-model="datePickerDate"
+      v-model:visible="datePickerVisible"
+      type="date"
+      title="选择记账日期"
+      :min-date="new Date(2020, 0, 1)"
+      :max-date="new Date(2030, 11, 31)"
+      is-show-chinese
+      @confirm="handleDateConfirm"
+    />
   </div>
 </template>
 
@@ -198,6 +259,96 @@ const selectCategory = (catName: string) => {
       font-weight: 700;
       color: #1c2130;
       letter-spacing: -2px;
+    }
+  }
+
+  .date-row {
+    padding: 0 18px 14px;
+
+    .date-card {
+      position: relative;
+      width: 100%;
+      min-height: 54px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 13px;
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      cursor: pointer;
+      overflow: hidden;
+      font-family: 'Noto Sans SC', sans-serif;
+      transition:
+        transform 0.16s,
+        box-shadow 0.16s;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: -34px;
+        right: -28px;
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: #e6f9f6;
+        opacity: 0.8;
+      }
+
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .date-icon {
+        position: relative;
+        z-index: 1;
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        background: #e6f9f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      .date-copy {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .date-label {
+        display: block;
+        margin-bottom: 2px;
+        color: #8b9cb1;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .date-value {
+        display: block;
+        color: #1c2130;
+        font-size: 14px;
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .date-arrow {
+        position: relative;
+        z-index: 1;
+        padding-right: 4px;
+        color: #3ecfb2;
+        font-size: 18px;
+        font-weight: 700;
+      }
     }
   }
 
