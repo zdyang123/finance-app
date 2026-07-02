@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { MONTH_DATA, MONTHS, CAT_BREAKDOWN } from '../utils/data'
-import { useFormatNumber } from '../utils/helpers'
-import MonthPicker from '../components/MonthPicker.vue'
+import { MONTH_DATA, MONTHS, CAT_BREAKDOWN } from '@/utils/data'
+import { useFormatNumber } from '@/utils/helpers'
+import MonthPicker from '@/components/MonthPicker.vue'
 
 const currentMonth = ref(5) // 0-based June
 

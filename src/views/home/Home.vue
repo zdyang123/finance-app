@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { TRANSACTIONS } from '../utils/data'
-import { useFormatCurrency } from '../utils/helpers'
+import { TRANSACTIONS } from '@/utils/data'
+import { useFormatCurrency } from '@/utils/helpers'
 
 const router = useRouter()
 const currentTime = ref('9:41')

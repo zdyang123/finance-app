@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Cell, CellGroup } from '@nutui/nutui'
-import CountUpNumber from '../components/CountUpNumber.vue'
+import CountUpNumber from '@/components/CountUpNumber.vue'
 
 const daysCount = ref(128)
 const billsCount = ref(486)

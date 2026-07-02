@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ALL_TRANSACTIONS } from '../utils/data'
-import { useFormatCurrency } from '../utils/helpers'
-import type { Transaction } from '../types'
-import MonthPicker from '../components/MonthPicker.vue'
+import { ALL_TRANSACTIONS } from '@/utils/data'
+import { useFormatCurrency, formatDateLabel } from '@/utils/helpers'
+import type { Transaction } from '@/types'
+import MonthPicker from '@/components/MonthPicker.vue'
 
 const router = useRouter()
 const activeFilter = ref<'all' | 'exp' | 'inc'>('all')
@@ -31,17 +31,6 @@ const grouped = computed(() => {
   }
   return Array.from(map.entries()).sort((a, b) => b[0].localeCompare(a[0]))
 })
-
-const formatDateLabel = (dateStr: string) => {
-  const today = new Date()
-  const d = new Date(dateStr)
-  const diff = Math.floor((today.getTime() - d.getTime()) / 86400000)
-  if (diff === 0) return '今天'
-  if (diff === 1) return '昨天'
-  const m = d.getMonth() + 1
-  const day = d.getDate()
-  return `${m}月${day}日`
-}
 
 const dayTotal = (txs: Transaction[]) => {
   const exp = txs.filter((t) => t.type === 'exp').reduce((s, t) => s + t.amt, 0)

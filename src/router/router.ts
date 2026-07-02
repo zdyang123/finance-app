@@ -1,35 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from './Home.vue'
-import Record from './Record.vue'
-import Stats from './Stats.vue'
-import Profile from './Profile.vue'
-import AllTransactions from './AllTransactions.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component: import('@/views/home/Home.vue'),
   },
   {
     path: '/record',
     name: 'record',
-    component: Record,
+    component: import('@/views/record/Record.vue'),
   },
   {
     path: '/stats',
     name: 'stats',
-    component: Stats,
+    component: import('@/views/stats/Stats.vue'),
   },
   {
     path: '/profile',
     name: 'profile',
-    component: Profile,
+    component: import('@/views/profile/Profile.vue'),
   },
   {
     path: '/all',
     name: 'all',
-    component: AllTransactions,
+    component: import('@/views/all/AllTransactions.vue'),
   },
 ]
 

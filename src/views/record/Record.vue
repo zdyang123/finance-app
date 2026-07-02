@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { CATEGORIES_EXP, CATEGORIES_INC } from '../utils/data'
-import { useToast } from '../utils/helpers'
-import type { RecordType, Category } from '../types'
+import { CATEGORIES_EXP, CATEGORIES_INC } from '@/utils/data'
+import { useToast } from '@/utils/helpers'
+import type { RecordType, Category } from '@/types'
 
 const router = useRouter()
 const route = useRoute()
